@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import pickle
 from langchain_community.llms import LlamaCpp
@@ -12,13 +11,13 @@ model_path = os.path.join(os.getcwd(), "llama-2-7b-chat.Q2_K.gguf")
 
 def load_vector_store(file_name="faiss_index.bin"):
     """
-    从本地文件加载 FAISS 向量存储。
+    Loads a FAISS vector store from a local file.
 
     Args:
-        file_name (str): 向量存储文件的名称。
+        file_name (str): The name of the vector store file.
 
     Returns:
-        FAISS: 加载的 FAISS 向量存储对象。
+        FAISS: The loaded FAISS vector store object.
     """
     if not os.path.exists(file_name):
         print(f"Error: The file {file_name} was not found. Please run rag_ingestion.py first.")
@@ -32,13 +31,13 @@ def load_vector_store(file_name="faiss_index.bin"):
 
 def load_local_llm(model_path):
     """
-    加载本地的 LlamaCpp LLM 模型。
+    Loads a local LlamaCpp LLM model.
 
     Args:
-        model_path (str): 本地 LLM 模型文件的路径。
+        model_path (str): The path to the local LLM model file.
 
     Returns:
-        LlamaCpp: LlamaCpp LLM 对象。
+        LlamaCpp: The LlamaCpp LLM object.
     """
     print(f"Loading local LLM from {model_path}...")
     llm = LlamaCpp(
@@ -47,7 +46,7 @@ def load_local_llm(model_path):
         max_tokens=2000,
         n_ctx=4096,
         top_p=1,
-        n_gpu_layers=0,  # 如果你有GPU，可以将此值设置为大于0以使用GPU加速
+        n_gpu_layers=0,  # Set this value to > 0 to use GPU acceleration if you have a GPU
         verbose=False,
     )
     print("LLM loaded successfully.")
@@ -55,11 +54,11 @@ def load_local_llm(model_path):
 
 def run_query_loop(llm, vector_store):
     """
-    运行一个循环，接受用户输入并生成 RAG 答案。
+    Runs a loop that accepts user input and generates RAG answers.
 
     Args:
-        llm (LlamaCpp): 加载的 LLM 模型。
-        vector_store (FAISS): 加载的向量存储。
+        llm (LlamaCpp): The loaded LLM model.
+        vector_store (FAISS): The loaded vector store.
     """
     # Create the RAG chain
     qa_chain = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=vector_store.as_retriever())

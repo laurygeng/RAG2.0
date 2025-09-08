@@ -6,12 +6,16 @@ from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import FAISS
+
+# Manually add the site-packages directory to the Python path.
+# This is a robust way to ensure modules are found within the conda environment.
 try:
     conda_env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
     site_packages_path = os.path.join(conda_env_path, 'lib', 'python' + '.'.join(str(v) for v in sys.version_info[:2]), 'site-packages')
     if os.path.exists(site_packages_path) and site_packages_path not in sys.path:
         sys.path.append(site_packages_path)
     
+    # Check if the modules are now importable after the path modification
     import langchain
     import langchain_community
 
@@ -21,11 +25,11 @@ except Exception as e:
 
 def ingest_data(file_path="knowledge_base.txt", output_file="faiss_index.bin"):
     """
-    加载文本文件，分割文档，创建向量嵌入，并保存 FAISS 向量存储。
+    Loads a text file, splits the document, creates vector embeddings, and saves the FAISS vector store.
 
     Args:
-        file_path (str): 知识库文件的路径。
-        output_file (str): 保存 FAISS 向量存储的文件名。
+        file_path (str): Path to the knowledge base file.
+        output_file (str): The filename for the saved FAISS vector store.
     """
     if not os.path.exists(file_path):
         print(f"Error: Knowledge base file '{file_path}' not found. Please create the file with content first.")
