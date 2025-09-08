@@ -1,0 +1,23 @@
+# 忽略所有日志文件
+*.log
+
+# 忽略所有.pyc文件
+*.pyc
+
+# 忽略IDE/编辑器生成的文件
+.idea/
+.vscode/
+
+# 忽略特定文件夹
+build/
+dist/
+
+# 忽略环境变量文件
+.env
+
+# 忽略Python虚拟环境文件夹
+venv/
+
+*.bin
+
+*.gguf
