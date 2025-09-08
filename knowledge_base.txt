@@ -1,0 +1,5 @@
+Faiss is a library for efficient similarity search and clustering of dense vectors. It contains algorithms that search in sets of vectors of any size, up to ones that will not fit in RAM. It is a fundamental tool for building applications like chatbots and search engines that use large language models.
+
+A Retrieval-Augmented Generation (RAG) framework is a system that combines a retrieval component with a generative language model. This framework allows the model to "look up" information from a private knowledge base and use that information to generate more accurate, relevant, and grounded responses.
+
+LangChain is a popular open-source framework used to build applications with large language models. It provides tools and components to streamline the process of building sophisticated applications, including RAG systems, chatbots, and more.
