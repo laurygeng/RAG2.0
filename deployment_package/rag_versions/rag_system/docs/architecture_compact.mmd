@@ -1,0 +1,36 @@
+%% Compact architecture diagram (no Env Vars)
+%% Fit single PPT height; larger font; tight spacing
+%%{init: { 'flowchart': { 'diagramPadding': 4, 'nodeSpacing': 18, 'rankSpacing': 45 }, 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Arial, sans-serif', 'primaryColor': '#F1F5F9', 'primaryTextColor': '#0F172A', 'primaryBorderColor': '#64748B', 'lineColor': '#475569' } }}%%
+flowchart LR
+  subgraph Ingest[1 Ingest]
+    A[Load files] --> B[Pre-clean]
+    B --> C[Split chunks]
+  end
+  subgraph Index[2 Index]
+    C --> D[BM25 build]
+    C --> E[Embed chunks]
+    E --> F[Vector store]
+  end
+  subgraph Retrieve[3 Retrieve]
+    Q[Question] --> G[Ensemble retrieve]
+    G --> H[Pre M]
+    H --> I[Rerank]
+    I --> J[Top K]
+  end
+  subgraph Prompt[4 Prompt]
+    J --> K[Compose prompt]
+  end
+  subgraph Generate[5 Generate]
+    K --> L[LLM answer]
+    L --> M[Timeout fallback]
+  end
+  subgraph Evaluate[6 Evaluate]
+    M --> N[Similarity metrics]
+  end
+  subgraph Output[7 Output]
+    J --> O[Retrieval sample]
+    M --> P[Answers CSV]
+    N --> R[Eval CSV]
+  end
+
+  Ingest --> Index --> Retrieve --> Prompt --> Generate --> Evaluate --> Output

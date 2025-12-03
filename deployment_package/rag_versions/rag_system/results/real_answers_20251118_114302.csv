@@ -1,0 +1,130 @@
+Question_ID,Category,Question,Ground_Truth_Answer,Real_LLaMA_Answer,Retrieved_Passages,Rerank_Scores,Retrieved_Sources
+AA169,Aggression,"As a caregiver, I've been noticing some aggressive behavior in my loved one with dementia. Could you let me know about common factors that might trigger such behaviour?","Aggressive behavior in dementia can result from a variety of factors. Common triggers include:
+
+1. Environmental Factors: Loud noise, clutter, or a large number of people in the room can cause agitation.
+2. Physical Discomfort: They could be hungry, tired, in pain, or need to use the bathroom.
+3. Health Problems: Infections or illnesses can worsen dementia symptoms and trigger aggression.
+4. Difficulty with Complex Tasks: Frustration from tasks like getting dressed can lead to outbursts.
+5. Poor Communication: If they are unable to understand you or express their feelings, aggression can result.
+6. Changes in Routine: People with dementia may become upset if their daily routine is changed.
+7. Fear and Anxiety: Dementia can make the world a confusing place, causing fear which they respond to with aggression.
+
+As a caregiver, understanding these triggers can be beneficial in avoiding or reducing aggressive behaviors.","Aggressive behavior in dementia patients can be triggered by various factors, including caregiver communication styles, expectations, over- or underestimation of patient abilities, and cultural beliefs. These discrepancies can lead to frustration and agitation in the patient. Additionally, behaviors such as agitation, irritability, and other challenging behaviors are often observed in patients with mild dementia [1].
+
+Supporting context indices:
+[1], [13], [21].","[""behaviors, and these discrepancies were especially prevalent in patients with mild dementia\n[21]. Furthermore, caregiver communication styles, expectations, over- and underestimation\nof patient abilities, and cultural beliefs may all influence the very behaviors being observed\n[13].\nTo minimize ambiguity, agitation, irritability, and other challenging behaviors should be\ndescribed in clear language that can be understood by all members of the care team. In fact,\nit is often helpful to avoid using ambiguous terms such as “agitation” and “irritability,” and\ninstead describe the particular actions, responses, or emotional expressions observed in the\npatient. It is also important to identify the time course of the symptoms in question,\nincluding the context in which they first emerged, how fre""]",[0.8258289694786072],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Psychological Symptoms/Irritability/nihms-1020336.pdf""]"
+AA092,Alcohol intake,What could be the possible negative impacts of consuming alcohol for a family member who has Mild Cognitive Impairment?,"Consuming alcohol can exacerbate the symptoms of Mild Cognitive Impairment (MCI). Alcohol has a neurotoxic effect which can lead to further cognitive decline. It can accelerate memory loss, impair judgment, and increase confusion. Regular or heavy consumption of alcohol can also lead to an increased risk of progression from MCI to dementia. Additionally, alcohol can interact negatively with medications commonly prescribed for MCI, potentially reducing their efficacy or causing undesirable side effects. Overall, it can detrimentally impact the person's cognition, functioning, and quality of life. It's advisable for a person with MCI to limit or avoid alcohol for their health and well-being.","Consuming excessive alcohol may worsen Mild Cognitive Impairment (MCI) in family members, increasing the risk of dementia [1]. Excessive drinking can lead to inflammation, oxidative stress, and damage to brain cells, which can exacerbate cognitive decline [1]. Additionally, alcohol's sedative effects can disrupt sleep patterns, further compromising cognitive function [1]. Reducing or abstaining from excessive alcohol consumption may help mitigate these negative impacts.
+
+Supporting context indices:
+
+[1]","[""What's the risk?\nWhat can you do to reduce the risk?\nExcessive alcohol consumption\nDrinking excessively (more than 12\nstandard drinks per week), can increase\nyour risk of developing dementia.\nA “standard drink” means:\n• 341 ml/ 12oz (one bottle) of beer (5% alcohol)\n• 142ml/5 oz wine (12% alcohol)\n• 43 ml/11/2 oz spirit (40% alcohol)\nDrinking may interact with medications that you are taking or\nwith other health-related issues. Talk with your doctor about any\nconcerns you may have.\nLow levels of cognitive engagement\nCognitive engagement is thought\nto support the development of a\n“cognitive reserve”. This is the idea that people\nwho actively use their brains throughout their\nlives may be more protected against brain cell\ndamage caused by dementia.\nBe a lifelong learner! Challenge your brain""]",[0.0457337386906147],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Disease/Risk Factors/Risk-factors_Alzheimer-Society-Canada-2023.pdf""]"
+AA154,Anxiety,What are the typical symptoms of anxiety I should look out for in my family member who has dementia?,"Typical symptoms of anxiety in a person with dementia may include: restlessness or pacing, unexplained agitation or irritability, sleep disturbances, sudden mood changes, excessive worrying or fear, avoidance of social interaction, changes in eating habits, or increase in repetitive behaviors. In severe cases, they can also have panic attacks. It's essential to consult a healthcare professional if you notice these symptoms as combined they could indicate anxiety which needs appropriate treatment.","Typical symptoms of anxiety in patients with dementia include excessive fears, restlessness, irritability, muscle tension, and respiratory distress [1]. These symptoms can be difficult to control and are often specific to GAD in patients with dementia, rather than being situational or persistent only in certain environments [20].
+
+It's essential to look out for these specific symptoms when assessing anxiety in family members with dementia. However, it's also important to consider the challenges of expression due to memory- and language problems.
+
+Supporting context indices:
+[1] 
+[15]
+[20]","[""in dementia. Currently, the diagnostic criteria for GAD is the\nsame for patients with and without dementia.10 Revised crite\nria for anxiety diagnosis in patients with dementia recommend\ned excessive anxiety or worry that is difficult to control as the\nkey components with at least three of the following symptoms:\nrestlessness, irritability, muscle tension, excessive fears, and\nrespiratory distress.15 However, recent study suggested only\nthe muscle tension and fatigue are specific for the GAD in pa\ntients with dementia.20\nFourth, memory- and language problems in patients with\ndementia compromise expression of their feelings, and there\nfore, the assessment process may be difficult. In this situation,\nTable 1. The main symptom differences between anxiety and depression in patients with dementi""]",[0.8469723463058472],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Psychological Symptoms/Anxiety/What to do/dnd-16-33.pdf""]"
+AA164,Apathy,What are the usual indications of apathy in a family member who has dementia?,"Apathy in a family member with dementia can manifest in several ways, including:
+
+1. Lack of interest: They might show no interest in their usual activities or hobbies, or in interacting with family and friends.
+2. Reduced social interaction: They may avoid or have no desire for social contact or conversation.
+3. Emotionless demeanor: They might not express emotions or feelings as they used to - often appearing indifferent or unmotivated.
+4. Reduced activity: They may not engage in as much physical activity, even tasks they previously enjoyed or did regularly.
+5. Lack of initiative: They might not start actions or tasks on their own, needing prompting from others and even then they might not respond.
+Remember that such symptoms could be due to other factors, so it’s always recommended to consult a healthcare professional for an accurate diagnosis.","Apathy in a family member with dementia can manifest as a lack of interest, motivation, and social interaction. The person may withdraw from social gatherings and feel unmotivated to engage in activities they previously enjoyed [1]. They may also show a decrease in energy levels and an increase in confusion, which can be similar to symptoms of depression.
+
+Supporting context indices:
+
+[1] (It is often difficult to identify depression in people with dementia.)
+
+Note: The contexts do not provide specific indications of apathy, but rather describe its general characteristics.","[""It is important to diagnose depression in people with dementia\nbecause depression may respond to treatment.\nThe symptoms of depression can be similar to symptoms of\ndementia. Therefore, it is often difficult to identify depression\nin people with dementia. There are some common signs of\ndepression to be aware of:\n● Loss of interest in previously enjoyed activities\n● Lack of energy\n● Problems sleeping\n● Increased confusion\n● Loss of appetite and weight\nIf you are concerned about depression, speak to the person's\ndoctor.\nWhat is apathy?\nApathy is a word that describes loss of interest, motivation\nand/or persistence. It means not caring and not being social\nwith others. The person with dementia may develop this\napathy (become apathetic) and feel unmotivated to do\nanything. Apathy can be a symp""]",[0.43533894419670105],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Psychological Symptoms/Apathy/What to do/Overview.pdf""]"
+AA216,Appetite,What strategies can I use to improve the appetite of a family member with dementia?,"1. Maintain regular meal times: Following a routine can help trigger hunger signals.
+2. Make meals enjoyable: The dining environment should be quiet, relaxing, and free of distractions.
+3. Finger foods: If dexterity is an issue, provide easy-to-handle foods.
+4. Hydration: Ensure they're adequately hydrated. Soups and smoothies can offer additional nutrition.
+5. Small portions: Large plates can appear overwhelming; try using smaller plates and servings.
+6. Strengthen flavors: Dementia can dull taste buds; enhance taste by using herbs, spices, or lemon juice.
+7. Prompt eating: Gentle reminders to eat can be helpful. If needed, demonstrate by eating with them.
+8. Be patient: Mealtimes may take longer. Don't rush; make sure they chew and swallow safely.
+9. Regular dental checkups: Oral discomfort can hinder appetite. Regularly check for dental issues.
+10. Consult a dietitian or doctor if appetite doesn't improve or if weight loss occurs. They can provide strategies targeting specific needs and possibly recommend appetite stimulants.","To improve the appetite of a family member with dementia, consider using gentle and non-intrusive approaches that prioritize their comfort and enjoyment. For example, you can offer small, frequent meals or snacks, allowing them to eat at their own pace [1]. You can also try playing soothing music or engaging in calming activities together, such as listening to music or watching a favorite movie [2]. Additionally, ensuring the person's basic needs are met, including adequate hydration and nutrition, is crucial for overall well-being.
+
+Supporting context indices:
+
+[1] ● Make the person feel valued and productive.
+[2] ● Have the person with dementia feel included in groups.","[""● Make the person feel valued and productive.\n● Be ready to help the person start an activity.\n● Make the person with dementia feel included in groups.\n● Have the person participate in activities that do not\nrequire active participation, such as listening to music.\n● Some people with dementia may respond to a type of\nmedication called a cholinesterase inhibitor. You may\nwant to discuss this with a doctor.\n●""]",[0.19581058621406555],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Psychological Symptoms/Apathy/What to do/Overview.pdf""]"
+AA462,Caregiver health risk,"As a caregiver of a family member with dementia, what's the common health risks that caregivers like myself may face?","As a caregiver, especially for someone with dementia, you may face several health risks. These include stress-related conditions such as anxiety, depression, and insomnia, which can lead to more serious complications like heart disease, high blood pressure, or a weakened immune system. Chronic fatigue is common due to the demands of providing round-the-clock care. There's also an increased risk of physical injuries from lifting or assisting your loved one. Lastly, caregivers frequently neglect their own health needs, like skipping their own doctor appointments or not maintaining a balanced diet, which can additionally detriment their health. It's crucial to take care of your own health while caring for a loved one with dementia.","As a caregiver of a family member with dementia, you may face physical and emotional demands that can lead to feelings of anger, guilt, frustration, or worry. Grief and social isolation are also common [1]. Additionally, caregivers may experience stress due to major life changes and family medical history.
+
+It's essential to take care of your physical, emotional, and spiritual health to manage these risks. Asking questions of healthcare professionals, social workers, and others involved in the care of your loved one can also help you better understand the common health risks associated with caregiving for someone with dementia.
+
+Supporting context indices:
+[1]","[""Support for caregivers and care partners\nProviding care for someone with dementia is physically and emotionally demanding. You might\nfeel angry, guilty, frustrated or worried. Grief and social isolation are common. If you're a\ncaregiver or care partner for someone with dementia:\n● Learn about the disease and participate in caregiver education programs.\n● Find out about supportive services in your community, such as respite care\nor adult care. These services can give you a break from caregiving at\nscheduled times during the week.\n● Ask friends or other family members for help.\n● Take care of your physical, emotional and spiritual health.\n● Ask questions of health care professionals, social workers and others\ninvolved in the care of your loved one.\n● Join a support group.\nPreparing for your ""]",[0.9432919025421143],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Disease/Dementia (mild-moderate-severe)/How is it diagnosed_ Cognitive testing, blood testing, what they should look for_/Mayo_clinic3.pdf""]"
+AA119,Cognitive activities,What are some cognitive activities that could potentially benefit my family member who has MCI?,"Cognitive activities can be a helpful approach to slow cognitive decline in individuals with Mild Cognitive Impairment (MCI). Activities that engage the brain can include:
+
+1. Brain-training exercises: Puzzles like crosswords, Sudoku, or memory-focused apps can stimulate the brain.
+2. Regular Physical Exercise: Regular activities like walking, biking or yoga can also have cognitive benefits.
+3. Social Engagement: Participating in social activities can provide mental stimulation.
+4. Reading and Writing: These activities help keep the mind active and engaged.
+5. Artistic Activities: Drawing, painting or playing a musical instrument can enhance cognitive function. 
+
+It's important to consult with a physician or a mental health professional for expert guidance tailored to the individual's condition and capabilities.","Engaging in cognitive activities can potentially benefit individuals with mild cognitive impairment (MCI). These activities may help improve memory, concentration, and overall thinking abilities [1]. Examples of such activities include reading, puzzles, learning a new skill or hobby, and playing strategy games like chess or bridge [1]. These activities can be adapted to suit the individual's abilities and interests.
+
+Supporting context indices:
+[1]","[""What is mild cognitive impairment (MCI)?\nMild cognitive impairment is when a person starts to have problems with\ntheir memory or thinking. These may cause difficulties, but not so much\nthat they interfere with doing everyday tasks.\n\nFor some people MCI is an early sign of a disease that will eventually\ncause dementia. However, MCI is not dementia. It can be caused by\nother health problems, such as sleep disorders or the side effects of\nmedicines.\nSome mental abilities, such as memory and concentration, can become\nless reliable as a person gets older. This often becomes more noticeable\naround age 60 and older. It can be frustrating, but it rarely stops a person\nfrom doing normal everyday activities. \n\nHowever, some people feel these changes more quickly, and may\nbecome worried that somethin""]",[0.2641615569591522],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Disease/MCI/What is it_ Symptoms_ Causes and risks_/Alzheimers.org (1).pdf""]"
+AA243,Communication,"As the caregiver of a family member in the late stage of dementia, could you please suggest some effective communication strategies that I can use to communicate with them better?","Communicating with a dementia patient, especially in the late stages, can be challenging. Here are few strategies you can use:
+
+1. Non-verbal Communication: Use eye contact, touch, and body language to express your feelings. This can be more effective when verbal communication may confuse the patient.
+
+2. Simplified Language: Use simple and concise sentences. Speak clearly, slowly, and use a reassuring tone. Avoid asking open-ended questions.
+
+3. Patience and Understanding: Allow the person time to respond. Your patience, reassurance, and understanding can go a long way in communication.
+
+4. Keep Distractions at Minimum: Less environmental noise can help the patient focus better on the conversation.
+
+5. Use Visual Cues: Objects, photos, or gestures can aid in communication.
+
+6. Validate their Feelings: Do not argue or correct their misconceptions routinely. Instead, validate their feelings to make them feel heard and safe. 
+
+Always remember, your approach can impact the person's ability to communicate their thoughts and feelings effectively.","As a caregiver of a family member in the late stage of dementia, it's essential to use effective communication strategies that respect their limitations. Tell people visiting how much your loved one can understand, such as playing favorite board games or having conversations over dinner [1]. If they have difficulty remembering people, suggest introducing themselves briefly, like ""Hello George, I'm John"" [1]. Also, avoid correcting or arguing with them if they make a mistake or forget something. By using these strategies, you can create a more respectful and enjoyable interaction.
+
+Supporting context indices: [1]","[""Read and share this infographic about how to communicate\nwith a person who has Alzheimer's disease.\n●Tell people who visit how much your loved one can\nunderstand. For example, if the person is still in the\nearly stage of Alzheimer's, you might say that they can\nstill have a conversation over dinner or play a favorite\nboard game.\n●If your loved one has difficulty remembering people,\nsuggest that visitors start a conversation with the\nperson by briefly introducing themselves. For example,\n“Hello George, I'm John. We used to work together.”\n●Offer ways to make the conversation easier and more\nrespectful, such as not correcting or arguing with the\nperson with Alzheimer's if they make a mistake or\nforget something.""]",[0.5069275498390198],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Disease/Diagnosis Sharing/How to share the disease with patients, friends and family_/NIA.NIH.gov.pdf""]"
+AA352,Continence,What are the appropriate hygiene practices I should utilize for a family member with dementia who is facing incontinence issues?,"Hygiene practices for a family member with dementia facing incontinence include:
+
+1. Regular Toiletting: Encourage the individual to use the restroom regularly as this can decrease the risk of accidents.
+
+2. Use of Incontinence Products: Use adult-diapers, absorbent briefs, or incontinence pads that can be worn under normal clothing.
+
+3. Skincare: Cleanse the skin immediately after an accident to prevent skin infections and rashes. Mild soaps and warm water can be effective.
+
+4. Hydration and Nutrition: Maintaining a healthy diet and promoting fluid intake can prevent constipation and urinary tract infections.
+
+5. Personal Hygiene: Daily bathing may not be necessary and can dry out skin. Alternate between sponge baths and regular baths.
+
+6. Bed Protection: Use bed protectors to guard the mattress. 
+
+7. Laundry: Promptly wash soiled clothing and bedding.
+
+8. Professional Help: Consult a healthcare professional for additional strategies and treatments. 
+
+Remember, managing incontinence can be stressful for both parties, so maintaining empathy and patience is important.","For a family member with dementia facing incontinence issues, it's essential to prioritize their dignity and comfort. Gentle reminders to use the bathroom regularly, such as during mealtimes or after activities [1], can help establish a routine. Using absorbent products like adult diapers or pull-ups can also provide reassurance and prevent accidents. Visiting the park or engaging in group sessions can be enjoyable distractions from incontinence issues.
+
+Supporting context indices:
+[1]","[""who has apathy\nTry to find tasks and activities they will\nenjoy and find meaningful\nHave a basic daily routine to provide\na reassuring structure to each day.\nHave a weekly routine with a few\nactivities that suit the person's\npreferences and personality. This\ncould be a group session or simply\nvisiting the park and seeing\ngrandchildren.\nIdentify activities that the person has\na realistic chance of actively\ncontributing to and feeling in control.\nThis will help to rebuild their\nconfidence.\nCreate a safe space where they are\nfree to get things wrong\nLocal dementia support groups\nprovide a place where dementia\nsymptoms are accepted and\nunderstood, and where no one\nshould have to worry about\nembarrassing themselves or others.\nTry to apply these principles to home\nlife by not getting angry or up""]",[0.023097999393939972],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Psychological Symptoms/Apathy/What to do/Apathy and dementia _ Alzheimer_s Society.pdf""]"
+AA397,Daily Care Plan,Could you suggest some strategies that would assist in maintaining regularity in daily routines for a person with dementia whom I am caring for?,"1. Maintain Consistency: Keep the same daily routine to help reinforce the person’s internal body clock.
+2. Use Reminders: Visual cues like labels, signs, or photos can remind them of people's names or where items belong.
+3. Promote Sleep Hygiene: Encourage regular sleep times and a consistent bedtime routine. Avoid caffeine and alcohol. 
+4. Ensure Proper Nutrition: Regular, balanced meals can help maintain energy levels and overall health.
+5. Encourage Regular Exercise: Physical activity can improve mood and sleep quality.
+6. Eliminate Distractions: Limit noise and clutter to help them focus and reduce confusion.
+7. Offer Choices: When possible, let the person choose what they want to wear or eat. It can enhance their sense of control.
+8. Use Calendars and Clocks: These can help them keep track of time and upcoming tasks.
+9. Limit multitasking: Keep activities simple and structured.
+10. Patience and Reassurance: Ensure they feel secure and supported during forgetful episodes.","To maintain regularity in daily routines for a person with dementia, consider creating a simple and structured schedule [1]. Break tasks into small, manageable steps, allowing them to feel more in control and confident [2]. Establishing a daily routine can provide reassurance and stability, while also giving the individual time to engage in activities they enjoy, such as visiting grandchildren or participating in group sessions [3].
+
+Supporting context indices:
+
+[1] who has apathy
+[2] Have a basic daily routine to provide a reassuring structure to each day.
+[3] Identify activities that the person has a realistic chance of actively contributing to and feeling in control.","[""who has apathy\nTry to find tasks and activities they will\nenjoy and find meaningful\nHave a basic daily routine to provide\na reassuring structure to each day.\nHave a weekly routine with a few\nactivities that suit the person's\npreferences and personality. This\ncould be a group session or simply\nvisiting the park and seeing\ngrandchildren.\nIdentify activities that the person has\na realistic chance of actively\ncontributing to and feeling in control.\nThis will help to rebuild their\nconfidence.\nCreate a safe space where they are\nfree to get things wrong\nLocal dementia support groups\nprovide a place where dementia\nsymptoms are accepted and\nunderstood, and where no one\nshould have to worry about\nembarrassing themselves or others.\nTry to apply these principles to home\nlife by not getting angry or up""]",[0.6065598726272583],"[""/Users/gengminjie/Desktop/code/RAG/deployment_package/rag_versions/rag_system/code/downloaded_files/Psychological Symptoms/Apathy/What to do/Apathy and dementia _ Alzheimer_s Society.pdf""]"

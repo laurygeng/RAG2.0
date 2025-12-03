@@ -1,0 +1,56 @@
+flowchart TB
+  %% Updated architecture (EnsembleRetriever + Cross-Encoder rerank + strict prompt)
+  subgraph Ingestion[1. Ingestion & Cleaning]
+    FS[downloaded_files/* PDF DOCX TXT] --> LDR[Loaders PyMuPDF PyPDF Docx2txt Text]
+    LDR --> CLEAN[Pre-clean: headers/footers ref-page removal URL filtering spacing normalization]
+    CLEAN --> SPLIT[RecursiveCharacterTextSplitter chunk_size=RAG_CHUNK_TOKENS=500 overlap=RAG_CHUNK_TOKENS_OVERLAP=100 separators:newline+punctuation+space]
+    SPLIT --> CHUNKS[Chunks metadata: chunk_id size preview]
+    CHUNKS --> KWIDX[Keyword index word to chunk ids]
+  end
+
+  subgraph Indexing[2. Indexing]
+    CHUNKS --> BM25[BM25 retriever cache sha256 signature]
+    CHUNKS --> EMBEDQ[SentenceTransformer all-MiniLM-L6-v2]
+    EMBEDQ --> VSTORE[Chroma persistent DB collection=braincheck metric=cosine]
+  end
+
+  subgraph Retrieval[3. Hybrid Retrieval]
+    Q[Question] --> ENS[LangChain EnsembleRetriever BM25+Vector]
+    ENS --> PREK[Pre-retrieval Top-M M=RAG_RETRIEVE_PRE_K]
+    PREK --> RERANK[Cross-Encoder CPU model=RAG_RERANK_MODEL truncate=RAG_RERANK_PASSAGE_CHARS]
+    RERANK --> TOPK[Final Top-K passages K=RAG_RETRIEVAL_TOP_K]
+  end
+
+  subgraph Prompt[4. Prompt Construction]
+    TOPK --> PROMPT[Strict RAG Prompt role+7 rules citations insufficiency phrase]
+  end
+
+  subgraph Generation[5. Answer Generation]
+    PROMPT --> OLLAMA[Ollama API /api/generate model=llama3.2:latest request_timeout=RAG_GEN_REQUEST_TIMEOUT]
+    OLLAMA --> FALLBACK[Timeout fallbacks full->reduced ctx->none]
+    FALLBACK --> ANSWER[Answer CSV row]
+  end
+
+  subgraph Evaluation[6. Evaluation]
+    ANSWER --> EVAL[Similarity metrics semantic jaccard overlap combined]
+  end
+
+  subgraph Outputs[7. Artifacts]
+    TOPK --> OUT1[Retrieval sample MD]
+    ANSWER --> OUT2[results real_answers csv Rerank_Scores Passages Sources]
+    EVAL --> OUT3[evaluation real_llama_evaluation csv]
+  end
+
+  subgraph Env[Env Vars]
+    EV1[RAG_CHUNK_TOKENS]
+    EV2[RAG_CHUNK_TOKENS_OVERLAP]
+    EV3[RAG_RETRIEVE_PRE_K]
+    EV4[RAG_RETRIEVAL_TOP_K]
+    EV5[RAG_RERANK_ENABLE]
+    EV6[RAG_RERANK_MODEL]
+    EV7[RAG_RERANK_DEVICE]
+    EV8[RAG_RERANK_PASSAGE_CHARS]
+    EV9[RAG_GEN_REQUEST_TIMEOUT]
+    EV10[RAG_GEN_OVERALL_TIMEOUT]
+    EV11[RAG_ENABLE_LOAD_DATA]
+  end

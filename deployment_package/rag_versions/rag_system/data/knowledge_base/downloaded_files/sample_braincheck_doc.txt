@@ -1,0 +1,19 @@
+This is a sample BrainCheck document for testing the knowledge base loader.
+
+# About BrainCheck
+
+BrainCheck is a cognitive assessment platform that provides digital biomarkers for brain health.
+
+## Key Features:
+- Cognitive assessments
+- Brain health monitoring
+- Digital biomarkers
+- Healthcare integration
+
+## Applications:
+- Clinical trials
+- Healthcare providers
+- Research institutions
+- Individual health monitoring
+
+This document contains information about the platform's capabilities and use cases.
