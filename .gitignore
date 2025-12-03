@@ -1,3 +1,29 @@
+# Virtual environments
+.venv/
+.venv311/
+venv/
+env/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+
+# macOS
+.DS_Store
+
+# Editor configs
+.idea/
+.vscode/
+
+# Local databases and large artifacts
+deployment_package/rag_versions/rag_system/data/braincheck_vectordb/
+deployment_package/rag_versions/rag_system/data/*.sqlite3
+deployment_package/rag_versions/rag_system/data/chroma_import_*.jsonl
+
+# Logs
+*.log
+results/ollama_serve_*.log
 # 忽略所有日志文件
 *.log
 
