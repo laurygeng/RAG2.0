@@ -11,6 +11,7 @@ __pycache__/
 
 # macOS
 .DS_Store
+**/.DS_Store
 
 # Editor configs
 .idea/
@@ -20,6 +21,14 @@ __pycache__/
 deployment_package/rag_versions/rag_system/data/braincheck_vectordb/
 deployment_package/rag_versions/rag_system/data/*.sqlite3
 deployment_package/rag_versions/rag_system/data/chroma_import_*.jsonl
+deployment_package/rag_versions/rag_system/code/chroma/
+deployment_package/rag_versions/rag_system/code/downloaded_files/
+deployment_package/rag_versions/rag_system/evaluation/
+deployment_package/rag_versions/rag_system/results/
+
+# Large binary artifacts
+*.pkl
+*.sqlite3
 
 # Logs
 *.log

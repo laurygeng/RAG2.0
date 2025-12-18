@@ -27,14 +27,13 @@ SimpleBrainCheckLoader = None
 load_knowledge_base = None
 
 class RealModelAnswerGenerator:
-    """Generate answers from local LLM endpoints (simple wrapper used in experiments)."""
+    """Generate answers from Google Gemini 3 API."""
 
     def __init__(self):
-        # Use 127.0.0.1 instead of 'localhost' to avoid potential IPv6 vs IPv4
-        # name-resolution differences that can make requests miss a server
-        # that is listening only on the IPv4 loopback.
-        self.api_url = "http://127.0.0.1:11434/api/generate"
-        self.llama_model = "llama3.2:latest"  # Only use llama; remove mistral per user request
+        # Google Gemini API configuration
+        self.api_key = "AIzaSyD7Gr761E9PZp-C3tmdCdzBT7nEUNRNads"
+        self.gemini_model = "gemini-3-pro-preview"
+        self.api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.gemini_model}:generateContent?key={self.api_key}"
 
         # optional retrieval components
         self.kb = None
@@ -266,125 +265,19 @@ class RealModelAnswerGenerator:
             logging.error(f"Failed to generate answer for question: {question}. Error: {e}")
             return f"Failed to generate answer: {e}"
 
-    def get_available_models(self):
-        """Return a set of model names registered on the ollama server, or empty set on error."""
-        try:
-            # self.api_url is usually 'http://127.0.0.1:11434/api/generate'.
-            # Avoid constructing '/api/api/tags' by splitting at the '/api' segment.
-            tags_url = self.api_url.rsplit('/api', 1)[0] + '/api/tags'
-            resp = requests.get(tags_url, timeout=5)
-            resp.raise_for_status()
-            data = resp.json()
-            models = {m.get('name') for m in data.get('models', []) if m.get('name')}
-            return models
-        except Exception:
-            return set()
-
-    def register_local_manifests(self):
-        """If the running Ollama doesn't expose models but ~/.ollama contains manifests,
-        attempt to register those manifests with the running binary by invoking the
-        local `ollama pull registry.ollama.ai/library/<name>:<tag>` commands.
-        Returns the set of model names it attempted to register.
-        """
-        """Try to register manifests by invoking `ollama pull` for manifests found in ~/.ollama.
-        This routine will try common ollama binary locations and a couple of pull command
-        variants and will capture stdout/stderr so failures are visible in logs.
-        Returns the set of model tags it attempted to register (e.g. 'llama3.2:latest')."""
-
-        tried = set()
-        try:
-            home_manifests = os.path.expanduser('~/.ollama/models/manifests/registry.ollama.ai/library')
-            if not os.path.isdir(home_manifests):
-                logging.info(f"No local manifests dir found at {home_manifests}")
-                return tried
-
-            # common ollama binary candidates to try. Allow overriding the binary via
-            # env var RAG_OLLAMA_BIN (useful when multiple installations exist).
-            import shutil
-            candidates = []
-            # prefer user-provided binary path
-            user_bin = os.environ.get('RAG_OLLAMA_BIN')
-            if user_bin:
-                candidates.append(user_bin)
-            repo_local = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'ollama'))
-            if os.path.exists(repo_local):
-                candidates.append(repo_local)
-            which_ollama = shutil.which('ollama')
-            if which_ollama:
-                candidates.append(which_ollama)
-            # Homebrew common locations (Intel / Apple Silicon)
-            candidates.extend(['/usr/local/bin/ollama', '/opt/homebrew/bin/ollama'])
-
-            # dedupe while preserving order
-            seen = set()
-            bins = []
-            for c in candidates:
-                if c and c not in seen:
-                    seen.add(c)
-                    bins.append(c)
-
-            import subprocess
-
-            # find model folders like 'llama3.2' or 'mistral'
-            for model_name in os.listdir(home_manifests):
-                model_dir = os.path.join(home_manifests, model_name)
-                if not os.path.isdir(model_dir):
-                    continue
-                for tag_fname in os.listdir(model_dir):
-                    tag = tag_fname
-                    # prefer short form 'llama3.2:latest' but also try the fully-qualified registry form
-                    short_tag = f"{model_name}:{tag}"
-                    fq_tag = f"registry.ollama.ai/library/{model_name}:{tag}"
-                    tried.add(short_tag)
-
-                    env = os.environ.copy()
-                    env['OLLAMA_DIR'] = os.path.expanduser('~/.ollama')
-
-                    # try each binary and each tag format, capture output
-                    for bin_path in bins:
-                        if not os.path.exists(bin_path):
-                            continue
-                        for candidate_tag in (short_tag, fq_tag):
-                            cmd = [bin_path, 'pull', candidate_tag]
-                            try:
-                                logging.info(f"Attempting to run: {cmd} (OLLAMA_DIR={env['OLLAMA_DIR']})")
-                                proc = subprocess.run(cmd, check=False, env=env, capture_output=True, text=True, timeout=180)
-                                out = (proc.stdout or '').strip()
-                                err = (proc.stderr or '').strip()
-                                logging.info(f"ollama pull exit={proc.returncode}; stdout={out[:800]}{'...' if len(out)>800 else ''}")
-                                if err:
-                                    logging.info(f"ollama pull stderr: {err[:800]}{'...' if len(err)>800 else ''}")
-                                    # If the error indicates the ollama daemon isn't running, provide a helpful hint
-                                    if 'server not responding' in err.lower() or 'could not find ollama app' in err.lower():
-                                        logging.info("Hint: the ollama binary ran but could not contact a running ollama server.\n" \
-                                                     "Start the server with: OLLAMA_DIR=~/.ollama <path-to-ollama> serve &\n" \
-                                                     "or ensure the running service uses the same OLLAMA_DIR. Then retry this script.")
-                                # if exit code is 0 we consider the pull attempted/successful
-                                if proc.returncode == 0:
-                                    logging.info(f"Successfully executed pull: {candidate_tag} using {bin_path}")
-                                    # once a pull succeeds for this tag, stop trying other candidates for it
-                                    raise StopIteration
-                            except StopIteration:
-                                break
-                            except Exception as e:
-                                logging.info(f"pull command failed: {cmd} -> {e}")
-                        else:
-                            # inner loop didn't break; continue to next binary
-                            continue
-                        # inner loop broke due to StopIteration: break outer binary loop
-                        break
-
-            return tried
-        except Exception as e:
-            logging.info(f"register_local_manifests error: {e}")
-            return tried
-
     def _generate_answer_with_context(self, model_name, question, context: str = None, max_retries=3):
-        """Call the local generation API with a short prompt. Returns string answer or failure message.
+        """Call the Google Gemini API with a short prompt. Returns string answer or failure message.
 
         The prompt is evidence-first: the model is instructed to only use provided contexts
         and to respond 'Insufficient evidence to answer.' when contexts are insufficient.
         """
+        if context:
+            logging.info(f"Context length for question '{question[:30]}...': {len(context)} chars")
+            # DEBUG: Print context to stdout for user inspection
+            print(f"\n--- DEBUG: PROMPT CONTEXT ---\n{context[:2000]}...\n-----------------------------")
+        else:
+            logging.warning(f"No context provided for question '{question[:30]}...'")
+
         prompt = self._build_prompt(question, context)
         # Generation constraints: max words
         try:
@@ -394,13 +287,15 @@ class RealModelAnswerGenerator:
         # Append explicit instruction to help steer the model; we'll also truncate post-hoc as a safety
         prompt += f"\n\nNOTE: Limit your answer to at most {max_words} words."
 
+        # Gemini API payload structure
         payload = {
-            "model": model_name,
-            "prompt": prompt,
-            "stream": False,
-            # Ollama's HTTP API rejects unknown option keys like `max_tokens`/`top_p`.
-            # Keep options minimal and compatible with the server (temperature is accepted).
-            "options": {"temperature": 0.3}
+            "contents": [{
+                "parts": [{"text": prompt}]
+            }],
+            "generationConfig": {
+                "temperature": 0.3,
+                "maxOutputTokens": 800,  # Adjust as needed
+            }
         }
 
         start = time.monotonic()
@@ -416,13 +311,26 @@ class RealModelAnswerGenerator:
                         body = (e.response.text or '')[:600] if e.response is not None else ''
                     except Exception:
                         body = ''
-                    logging.error(f"HTTPError from Ollama API (status={status}) on attempt {attempt+1}/{max_retries}: {body}")
+                    logging.error(f"HTTPError from Gemini API (status={status}) on attempt {attempt+1}/{max_retries}: {body}")
                     raise
+                
                 result = response.json()
-                # Ollama may return an error string in an 'error' field or as the HTTP body
-                if isinstance(result, dict) and result.get('error'):
-                    return f"Model error: {result.get('error')}"
-                answer = result.get('response', '')
+                # Parse Gemini response
+                try:
+                    candidates = result.get('candidates', [])
+                    if not candidates:
+                        return "Model error: No candidates returned"
+                    
+                    content = candidates[0].get('content', {})
+                    parts = content.get('parts', [])
+                    if not parts:
+                        finish_reason = candidates[0].get('finishReason', 'UNKNOWN')
+                        return f"Model error: No content parts returned (finishReason={finish_reason})"
+                        
+                    answer = parts[0].get('text', '')
+                except Exception as e:
+                    return f"Model error: Failed to parse response: {e}"
+
                 if isinstance(answer, str):
                     # Truncate to max_words as a safety-net
                     try:
@@ -447,7 +355,7 @@ class RealModelAnswerGenerator:
                     body = (e.response.text or '')[:600] if getattr(e, 'response', None) is not None else ''
                 except Exception:
                     status, body = 'unknown', ''
-                logging.error(f"RequestException from Ollama API (status={status}) on attempt {attempt+1}/{max_retries}: {e} {body}")
+                logging.error(f"RequestException from Gemini API (status={status}) on attempt {attempt+1}/{max_retries}: {e} {body}")
                 # give a short backoff and retry until overall timeout
                 if time.monotonic() - start > self.overall_timeout:
                     return f"Failed to generate answer after {max_retries} attempts"
@@ -457,64 +365,33 @@ class RealModelAnswerGenerator:
         return f"Failed to generate answer after {max_retries} attempts"
 
     def _build_prompt(self, question: str, context: Optional[str]) -> str:
-        """Construct a stricter RAG prompt with role, golden rules, citation policy (English only)."""
-        # Language selection (env-driven); default to English
-        try:
-            lang = os.getenv('RAG_LANG', 'en').strip().lower()
-        except Exception:
-            lang = 'en'
-        insuff = "Insufficient evidence to answer."
+        """Construct a RAG prompt."""
         has_ctx = bool(context and context.strip())
-        role = "You are a professional medical advisor. Your sole goal is to produce an accurate, evidence-grounded answer strictly from the provided contexts."
-        rules_intro = "Golden Rules:"
-        rules = [
-            "1. Use ONLY the provided [Context] passages; no external knowledge or speculation.",
-            f"2. If evidence is insufficient, reply EXACTLY: '{insuff}'.",
-            "3. Cite supporting passage indices (e.g. [1]) immediately after facts; indices must exist in the provided list.",
-            "4. Do NOT hallucinate or add unsupported details; avoid vague hedging unless present in a passage.",
-            "5. Answer format: 2-4 concise sentences, then a final line: Sources: [1], [2].",
-            "6. Do NOT emit disclaimers, safety notices, or meta commentary.",
-            "7. Do not cite an index you did not use; do not fabricate combined evidence.",
-        ]
-        question_label = "Question"
-        ctx_header = "Contexts"
+        
+        if not has_ctx:
+             return f"""Question: {question}
+Context: No context available.
+Instruction: Answer the question to the best of your ability.
+Answer:"""
 
-        rules_block = rules_intro + "\n" + "\n".join(rules)
+        prompt = f"""You are an expert assistant. Answer the question using the provided context.
 
-        if has_ctx:
-            prompt_parts = [
-                role,
-                rules_block,
-                f"{ctx_header}:\n{context}",
-                f"{question_label}: {question}",
-                "Follow all rules precisely. If unsure, output the insufficiency phrase only.",
-            ]
-        else:
-            # No context case: instruct conservative behavior
-            if lang == 'zh':
-                no_ctx_rules = (
-                    f"无可用上下文。若无法仅凭证据安全回答，必须输出：'{insuff}'. 不要编造。"
-                )
-            else:
-                no_ctx_rules = (
-                    f"No contexts available. If you cannot answer safely without unsupported fabrication, reply EXACTLY: '{insuff}'. Do not invent."
-                )
-            prompt_parts = [role, rules_block, no_ctx_rules, f"{question_label}: {question}"]
+Context:
+{context}
 
-        return "\n\n".join(prompt_parts).strip()
+Question: {question}
+
+Instructions:
+1. Answer the question based on the context.
+2. If the answer is not explicitly stated, infer it from the context if possible.
+3. Cite passage numbers [1], [2] etc.
+4. Do NOT say "Insufficient evidence". If you are unsure, provide the most relevant information from the context.
+"""
+        return prompt
 
     def _is_model_load_error(self, text: str) -> bool:
-        if not text:
-            return False
-        t = text.lower()
-        checks = [
-            'failed to load model',
-            'incompatible',
-            'model may be incompatible',
-            'failed to load',
-            'loader error',
-        ]
-        return any(c in t for c in checks)
+        # Gemini API doesn't have "model load" errors in the same way as local Ollama
+        return False
 
     def get_retrieved_context(self, question: str, top_k: int = 3, truncate: int = 300) -> str:
         # vector retrieval first
@@ -959,7 +836,7 @@ class RealModelAnswerGenerator:
 
             # use generate_answer wrapper which enforces per-question overall timeout
             # pass the retrieved `context` so the evidence-first prompt is used
-            llama = self.generate_answer(self.llama_model, question, context=context, max_retries=self.max_retries)
+            llama = self.generate_answer(self.gemini_model, question, context=context, max_retries=self.max_retries)
             # Adaptive fallbacks if generation failed due to API errors/timeouts
             if isinstance(llama, str) and (llama.startswith("Failed to generate") or llama.startswith("Timed out") or llama.startswith("Model error")):
                 # Try a shorter context: reduce number of passages and slice each passage shorter
@@ -967,16 +844,16 @@ class RealModelAnswerGenerator:
                     reduced_count = max(3, min(len(passages), (len(passages) + 1) // 2))
                     reduced_passages = [p[:min(350, passage_truncate)] if isinstance(p, str) else p for p in passages[:reduced_count]]
                     reduced_ctx = "\n\n".join([f"[{i}] {p}" for i, p in enumerate(reduced_passages, start=1)])
-                    llama2 = self.generate_answer(self.llama_model, question, context=reduced_ctx, max_retries=self.max_retries)
+                    llama2 = self.generate_answer(self.gemini_model, question, context=reduced_ctx, max_retries=self.max_retries)
                     if not (isinstance(llama2, str) and (llama2.startswith("Failed to generate") or llama2.startswith("Timed out") or llama2.startswith("Model error"))):
                         llama = llama2
                     else:
                         # Final fallback: try without any context
-                        llama3 = self.generate_answer(self.llama_model, question, context=None, max_retries=max(1, self.max_retries - 1))
+                        llama3 = self.generate_answer(self.gemini_model, question, context=None, max_retries=max(1, self.max_retries - 1))
                         llama = llama3
                 else:
                     # No passages; try a final no-context attempt
-                    llama2 = self.generate_answer(self.llama_model, question, context=None, max_retries=max(1, self.max_retries - 1))
+                    llama2 = self.generate_answer(self.gemini_model, question, context=None, max_retries=max(1, self.max_retries - 1))
                     llama = llama2
             if "Timed out" in str(llama):
                 llama = "Default answer: Insufficient evidence to answer."
@@ -999,9 +876,20 @@ class RealModelAnswerGenerator:
 
 
 def main():
-    print("=== Real model answer generation ===")
+    print("=== Real model answer generation (Gemini 3) ===")
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    questions_file = os.path.join(base_dir, 'data', 'selected_questions.csv')
+    
+    # Allow overriding the questions file via env var
+    custom_questions_file = os.environ.get('RAG_QUESTIONS_FILE')
+    if custom_questions_file:
+        # If absolute path, use as is; otherwise relative to data dir
+        if os.path.isabs(custom_questions_file):
+            questions_file = custom_questions_file
+        else:
+            questions_file = os.path.join(base_dir, 'data', custom_questions_file)
+    else:
+        questions_file = os.path.join(base_dir, 'data', 'selected_questions.csv')
+
     if not os.path.exists(questions_file):
         print(f"ERROR: Questions file not found: {questions_file}")
         return None
@@ -1032,113 +920,23 @@ def main():
         out = generator.generate_retrieval_sample(n=n, top_k=top_k)
         return out
 
-    # quick connectivity check: ask the Ollama server which models are registered
-    available = generator.get_available_models()
-    if available:
-        print(f"✅ Available models detected: {', '.join(sorted(available))}")
-    else:
-        print("⚠️ Ollama server is running but no registered models detected (will attempt to register local manifests or start a local ollama server).")
-        # Optionally try to start a local ollama server automatically (can be disabled via RAG_AUTO_START_OLLAMA=0)
-        auto_start = os.environ.get('RAG_AUTO_START_OLLAMA', '1')
-        tried = set()
-        if auto_start != '0':
-            # determine binary to use (allow override via RAG_OLLAMA_BIN)
-            bin_candidates = []
-            user_bin = os.environ.get('RAG_OLLAMA_BIN')
-            if user_bin:
-                bin_candidates.append(user_bin)
-            which_bin = shutil.which('ollama')
-            if which_bin:
-                bin_candidates.append(which_bin)
-            bin_candidates.extend(['/usr/local/bin/ollama', '/opt/homebrew/bin/ollama'])
-
-            # find the first existing binary
-            bin_path = None
-            for b in bin_candidates:
-                if b and os.path.exists(b):
-                    bin_path = b
-                    break
-
-            if bin_path:
-                print(f"ℹ️ Attempting to start ollama server using: {bin_path}")
-                # start in background and redirect logs to results/ollama_serve_<ts>.log
-                ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-                os.makedirs(os.path.join(generator.base_dir, 'results'), exist_ok=True)
-                serve_log = os.path.join(generator.base_dir, 'results', f'ollama_serve_{ts}.log')
-                env = os.environ.copy()
-                env['OLLAMA_DIR'] = os.path.expanduser('~/.ollama')
-                try:
-                    lf = open(serve_log, 'a')
-                    proc = subprocess.Popen([bin_path, 'serve'], env=env, stdout=lf, stderr=lf)
-                    print(f"ℹ️ Launched ollama serve (pid={proc.pid}), logs: {serve_log}")
-                    # give server a short time to initialize
-                    time.sleep(5)
-                except Exception as e:
-                    print(f"⚠️ Failed to start ollama serve automatically: {e}")
-            else:
-                print("⚠️ No ollama binary found in candidates; set RAG_OLLAMA_BIN to point to your ollama binary if you want auto-start.")
-
-        # Simplify: directly pull only llama3.2:latest (skip manifest scan & other models)
-        print("ℹ️ Pulling llama3.2:latest (single-model mode)...")
-        try:
-            bin_path = os.environ.get('RAG_OLLAMA_BIN') or shutil.which('ollama') or '/usr/local/bin/ollama'
-            if bin_path and os.path.exists(bin_path):
-                env2 = os.environ.copy(); env2['OLLAMA_DIR'] = os.path.expanduser('~/.ollama')
-                proc_pull = subprocess.run([bin_path, 'pull', generator.llama_model], check=False, env=env2, capture_output=True, text=True, timeout=600)
-                if proc_pull.returncode == 0:
-                    print("✅ pull llama3.2:latest success")
-                else:
-                    print(f"⚠️ pull llama3.2:latest exit={proc_pull.returncode} stderr={proc_pull.stderr[:200]}")
-            else:
-                print("⚠️ ollama binary not found; set RAG_OLLAMA_BIN to explicit path.")
-        except Exception as e:
-            print(f"⚠️ llama3.2 pull failed: {e}")
-        # Poll for availability
-        for i in range(5):
-            time.sleep(2)
-            available = generator.get_available_models()
-            if generator.llama_model in available:
-                print(f"✅ Detected {generator.llama_model} after attempt {i+1}")
-                break
-
-    # If no models are available, bail out immediately — stop further work so we
-    # can diagnose and fix Ollama connectivity first.
-    if not available:
-        print("❌ No available models detected; aborting run so Ollama connectivity can be diagnosed. Check previous pull/log output and fix before retrying.")
+    # Connectivity check for Gemini
+    print(f"ℹ️ Testing connectivity to Gemini API ({generator.gemini_model})...")
+    test = generator.generate_answer(generator.gemini_model, "What is dementia?", max_retries=2)
+    
+    if str(test).startswith("Failed to generate") or str(test).startswith("Timed out") or str(test).startswith("Model error"):
+        print(f"❌ Model request failed: {test}")
+        print("Please check your API key and internet connection.")
         return None
-
-    # choose a model for a short smoke-test (only use llama3.2:latest)
-    test_model = None
-    if generator.llama_model in available:
-        test_model = generator.llama_model
     else:
-        print(f"❌ Required model {generator.llama_model} not available; aborting connectivity test.")
-
-    if test_model:
-        test = generator.generate_answer(test_model, "What is dementia?", max_retries=2)
-        # If we see model-load errors or timeouts, poll a few times to allow the server to finish loading
-        if generator._is_model_load_error(str(test)) or str(test).startswith("Timed out") or str(test).startswith("Failed to generate"):
-            logging.info(f"Initial test returned an error/timeout: {test}. Polling up to {generator.model_poll_attempts} times to wait for model readiness.")
-            for i in range(generator.model_poll_attempts):
-                time.sleep(generator.model_poll_interval)
-                test = generator.generate_answer(test_model, "What is dementia?", max_retries=2)
-                if not (generator._is_model_load_error(str(test)) or str(test).startswith("Timed out") or str(test).startswith("Failed to generate")):
-                    break
-                logging.info(f"Attempt {i+1}/{generator.model_poll_attempts} still failing: {test}")
-
-        if str(test).startswith("Failed to generate") or str(test).startswith("Timed out") or generator._is_model_load_error(str(test)):
-            print(f"❌ Model request failed: {test}")
-        else:
-            print(f"✅ Connectivity test passed (model: {test_model}), sample output: {test[:200]}{'...' if len(test)>200 else ''}")
-    else:
-        print("❌ No model found for connectivity test; skipping generation test.")
+        print(f"✅ Connectivity test passed, sample output: {test[:200]}{'...' if len(test)>200 else ''}")
 
     try:
         results = generator.generate_all_answers(questions_df)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         results_dir = os.path.join(base_dir, 'results')
         os.makedirs(results_dir, exist_ok=True)
-        out = os.path.join(results_dir, f'real_answers_{timestamp}.csv')
+        out = os.path.join(results_dir, f'real_answers_gemini_{timestamp}.csv')
         pd.DataFrame(results).to_csv(out, index=False)
         print(f"Results saved to: {out}")
         return out
@@ -1149,4 +947,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # Load questions (from data folder)

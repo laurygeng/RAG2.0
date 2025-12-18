@@ -1,0 +1,16 @@
+pandas
+numpy
+requests
+nltk
+bert-score
+rouge-score
+torch
+transformers
+langchain
+langchain-community
+chromadb
+sentence-transformers
+pypdf
+docx2txt
+pymupdf
+tf-keras
