@@ -31,9 +31,20 @@ class RealModelAnswerGenerator:
 
     def __init__(self):
         # Google Gemini API configuration
-        self.api_key = "AIzaSyD7Gr761E9PZp-C3tmdCdzBT7nEUNRNads"
+        # Never hard-code API keys. Provide via environment variables.
+        # Supported env vars (first match wins): GOOGLE_API_KEY, GEMINI_API_KEY, API_KEY
+        self.api_key = (
+            os.environ.get('GOOGLE_API_KEY')
+            or os.environ.get('GEMINI_API_KEY')
+            or os.environ.get('API_KEY')
+        )
+        if not self.api_key:
+            raise RuntimeError(
+                "Missing Gemini API key. Please set GOOGLE_API_KEY (recommended) "
+                "or GEMINI_API_KEY (or API_KEY) in your environment."
+            )
         self.gemini_model = "gemini-3-pro-preview"
-        self.api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.gemini_model}:generateContent?key={self.api_key}"
+        self.api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.gemini_model}:generateContent"
 
         # optional retrieval components
         self.kb = None
@@ -301,7 +312,12 @@ class RealModelAnswerGenerator:
         start = time.monotonic()
         for attempt in range(max_retries):
             try:
-                response = requests.post(self.api_url, json=payload, timeout=self.request_timeout)
+                response = requests.post(
+                    self.api_url,
+                    params={"key": self.api_key},
+                    json=payload,
+                    timeout=self.request_timeout,
+                )
                 try:
                     response.raise_for_status()
                 except requests.exceptions.HTTPError as e:
